@@ -3,12 +3,10 @@ package com.niltonrc.simplef.services;
 import com.niltonrc.simplef.contracts.IEntryRepository;
 import com.niltonrc.simplef.entities.EntryEntity;
 import com.niltonrc.simplef.messages.*;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
