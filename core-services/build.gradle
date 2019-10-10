@@ -1,0 +1,15 @@
+dependencies {
+    compile project( ':dbc-api' )
+    compile project( ':dbc-persistence' )
+    compile project( ':core-domain' )
+    compile project( ':infrastructure' )
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // other content
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    compile group: 'org.mapstruct', name: 'mapstruct-jdk8', version: version__MapStruct
+    compile group: 'org.mapstruct', name: 'mapstruct-processor', version: version__MapStruct
+    compile group: 'org.springframework.boot', name:'spring-boot-starter', version: version__SpringBoot
+    testCompile group: 'io.github.benas', name: 'random-beans', version: version__RandomBeans
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: version__SpringBoot
+}

@@ -1,0 +1,9 @@
+dependencies {
+    compile project( ':dbc-api' )
+    compile project( ':infrastructure' )
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: version__SpringBoot
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: version__SpringBoot
+
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: version__SpringBoot
+}

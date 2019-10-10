@@ -1,0 +1,17 @@
+dependencies {
+    compile project( ':core-domain' )
+    compile project( ':dbc-persistence' )
+    compile project( ':infrastructure' )
+
+    compile group: 'org.flywaydb', name: 'flyway-core', version: version__FlyWay
+    compile group: 'com.querydsl', name: 'querydsl-core', version: version__QueryDSL
+    compile group: 'com.querydsl', name: 'querydsl-jpa', version: version__QueryDSL
+    compile group: 'com.querydsl', name: 'querydsl-sql', version: version__QueryDSL
+    compile group: 'com.querydsl', name: 'querydsl-apt', version: version__QueryDSL
+    compile group: 'com.querydsl', name: 'querydsl-sql-spring', version: version__QueryDSL
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: version__SpringBoot
+    compile group: 'com.h2database', name: 'h2', version: version__H2
+    compile group: 'joda-time', name: 'joda-time', version: version__JodaTime
+
+    testCompile group: 'org.mockito', name: 'mockito-core', version: version__MockitoCore
+}

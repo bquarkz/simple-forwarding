@@ -1,0 +1,13 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    compile project( ':infrastructure' )
+    compile project( ':core-domain' )
+    compile project( ':core-services' )
+    compile project( ':dbc-api' )
+    compile project( ':port-api' )
+    compile project( ':dbc-persistence' )
+    compile project( ':port-persistence' )
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: version__SpringBoot
+}

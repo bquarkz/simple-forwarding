@@ -1,0 +1,37 @@
+sourceSets {
+    generated
+}
+
+final def myDestinationDir = 'src/main/java/';
+
+sourceSets.generated.java.srcDirs = [ myDestinationDir ]
+
+configurations {
+    querydslapt
+}
+
+task generateQueryDSL(type: JavaCompile, group: 'compile', description: 'Generates the QueryDSL query types') {
+    delete myDestinationDir + 'com/niltonrc/simplef/entities/'
+    source = [ '../core-domain/src/main/java/com/niltonrc/simplef/entities/' ]
+    classpath = configurations.compile + configurations.querydslapt
+    options.compilerArgs = [
+            "-proc:only",
+            "-processor", "com.querydsl.apt.jpa.JPAAnnotationProcessor"
+    ]
+    destinationDir = sourceSets.generated.java.srcDirs.iterator().next()
+}
+
+compileJava {
+    dependsOn generateQueryDSL
+    source += generateQueryDSL.destinationDir
+}
+
+dependencies {
+    compile project( ':core-domain' )
+    compile project( ':infrastructure' )
+    compile group: 'javax.persistence', name: 'javax.persistence-api', version: version__JavaxPersistenceApi
+    compile group: 'com.querydsl', name: 'querydsl-core', version: version__QueryDSL
+    compile group: 'com.querydsl', name: 'querydsl-jpa', version: version__QueryDSL
+    compile group: 'com.querydsl', name: 'querydsl-apt', version: version__QueryDSL
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: version__SpringBoot
+}

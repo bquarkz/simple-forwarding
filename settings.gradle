@@ -1,0 +1,12 @@
+rootProject.name = 'simple-forwarding'
+
+include 'core-domain'
+include 'core-services'
+include 'dbc-api'
+include 'dbc-persistence'
+include 'infrastructure'
+include 'port-api'
+include 'port-persistence'
+include 'launcher-app'
+
+

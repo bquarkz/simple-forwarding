@@ -1,0 +1,5 @@
+dependencies {
+    compile project( ':infrastructure' )
+    compile group: 'javax.persistence', name: 'javax.persistence-api', version: version__JavaxPersistenceApi
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: version__ApacheCommonsLang3
+}
