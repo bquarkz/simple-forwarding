@@ -15,7 +15,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class EntryServiceTest
 {
@@ -34,49 +37,49 @@ public class EntryServiceTest
     public void test_CreateForwarding()
     {
         final EntryEntity entity = EntryEntity.generateByRandom( "test" );
-        Mockito.when( entryRepository.save( any( EntryEntity.class ) ) ).thenReturn( entity );
+        when( entryRepository.save( any( EntryEntity.class ) ) ).thenReturn( entity );
         CreateForwardingResponse response = entryService.createForwarding( new CreateForwardingRequest( "real address" ) );
-        Assert.assertNotNull( response );
-        Assert.assertEquals( entity.getFakeAddress(), response.getForwardingBundles().getFakeAddress() );
-        Mockito.verify( entryRepository.save( any( EntryEntity.class ) ), Mockito.times( 1 ) );
+        assertNotNull( response );
+        assertEquals( entity.getFakeAddress(), response.getForwardingBundles().getFakeAddress() );
+        verify( entryRepository, times( 1 ) ).save( any( EntryEntity.class ) );
     }
 
     @Test
     public void test_Swap()
     {
         final EntryEntity entity = EntryEntity.generateByRandom( "test" );
-        Mockito.when( entryRepository.findFirst( any() ) ).thenReturn( Optional.of( entity ) );
-        Mockito.when( entryRepository.save( any( EntryEntity.class ) ) ).thenReturn( entity );
+        when( entryRepository.findFirst( any() ) ).thenReturn( Optional.of( entity ) );
+        when( entryRepository.save( any( EntryEntity.class ) ) ).thenReturn( entity );
         SwapResponse response = entryService.swap( new SwapRequest( "code", "path" ) );
-        Assert.assertNotNull( response );
-        Assert.assertEquals( entity.getRealAddress(), response.getForwarding() );
+        assertNotNull( response );
+        assertEquals( entity.getRealAddress(), response.getForwarding() );
     }
 
     @Test
     public void test_Statistics()
     {
         final EntryEntity entity = EntryEntity.generateByRandom( "test" );
-        Mockito.when( entryRepository.findFirst( any() ) ).thenReturn( Optional.of( entity ) );
+        when( entryRepository.findFirst( any() ) ).thenReturn( Optional.of( entity ) );
         entity.getStatistics().put( "A", 5 );
         entity.getStatistics().put( "B", 10 );
         entity.getStatistics().put( "C", 15 );
-        StatisticsResponse response = entryService.getStatistics( new StatisticsRequest( Stream
-                .of( entity.getFakeAddress() )
-                .collect( Collectors.toList() ) ) );
-        Assert.assertNotNull( response );
+        final StatisticsResponse response = entryService
+                .getStatistics( new StatisticsRequest( Stream
+                        .of( entity.getFakeAddress() )
+                        .collect( Collectors.toList() ) ) );
+        assertNotNull( response );
+        assertEquals( 1, response.getStatistics().size() );
 
-        Assert.assertEquals( 1, response.getStatistics().size() );
+        assertEquals( entity.getFakeAddress(), response.getStatistics().get( 0 ).getCode() );
+        assertEquals( 30, (int)response.getStatistics().get( 0 ).getAllHits() );
 
-        Assert.assertEquals( entity.getFakeAddress(), response.getStatistics().get( 0 ).getCode() );
-        Assert.assertEquals( 30, (int)response.getStatistics().get( 0 ).getAllHits() );
+        assertEquals( "A", response.getStatistics().get( 0 ).getPaths().get( 0 ).getPath() );
+        assertEquals( 5, (int)response.getStatistics().get( 0 ).getPaths().get( 0 ).getHits() );
 
-        Assert.assertEquals( "A", response.getStatistics().get( 0 ).getPaths().get( 0 ).getPath() );
-        Assert.assertEquals( 5, (int)response.getStatistics().get( 0 ).getPaths().get( 0 ).getHits() );
+        assertEquals( "B", response.getStatistics().get( 0 ).getPaths().get( 1 ).getPath() );
+        assertEquals( 10, (int)response.getStatistics().get( 0 ).getPaths().get( 1 ).getHits() );
 
-        Assert.assertEquals( "B", response.getStatistics().get( 0 ).getPaths().get( 1 ).getPath() );
-        Assert.assertEquals( 10, (int)response.getStatistics().get( 0 ).getPaths().get( 1 ).getHits() );
-
-        Assert.assertEquals( "C", response.getStatistics().get( 0 ).getPaths().get( 2 ).getPath() );
-        Assert.assertEquals( 15, (int)response.getStatistics().get( 0 ).getPaths().get( 2 ).getHits() );
+        assertEquals( "C", response.getStatistics().get( 0 ).getPaths().get( 2 ).getPath() );
+        assertEquals( 15, (int)response.getStatistics().get( 0 ).getPaths().get( 2 ).getHits() );
     }
 }

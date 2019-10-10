@@ -61,8 +61,11 @@ public class EntryService
         for( String code : codes )
         {
             final List< PathDto > paths = new ArrayList<>();
-            final Map< String, Integer > entryStatistics = entryRepository
-                    .findFirst( QEntryEntity.entryEntity.fakeAddress.eq( code ) )
+            final Optional< EntryEntity > optional = entryRepository
+                    .findFirst( QEntryEntity.entryEntity.fakeAddress.eq( code ) );
+            if( !optional.isPresent() ) continue;
+
+            final Map< String, Integer > entryStatistics = optional
                     .map( EntryEntity::getStatistics )
                     .orElse( new HashMap<>() );
             for( String path : entryStatistics.keySet() )

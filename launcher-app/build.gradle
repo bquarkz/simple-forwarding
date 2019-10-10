@@ -11,3 +11,9 @@ dependencies {
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: version__SpringBoot
 }
+
+bootRun {
+    if( project.hasProperty( 'profiles' ) ) {
+        args = ["--spring.profiles.active=" + project.profiles]
+    }
+}

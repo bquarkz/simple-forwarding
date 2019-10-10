@@ -1,7 +1,7 @@
 package com.niltonrc.simplef.configuration;
 
 import com.niltonrc.simplef.contracts.IEntryService;
-import com.niltonrc.simplef.interceptors.StatisticsInterceptor;
+import com.niltonrc.simplef.interceptors.ForwardingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -16,6 +16,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer
     @Override
     public void addInterceptors( InterceptorRegistry registry )
     {
-        registry.addInterceptor( new StatisticsInterceptor( entryService ) );
+        registry.addInterceptor( new ForwardingInterceptor( entryService ) );
     }
 }

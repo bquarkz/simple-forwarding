@@ -1,21 +1,21 @@
-package com.niltonrc.simplef.interceptors;
+package com.niltonrc.simplef.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.niltonrc.simplef.contracts.IEntryService;
+import com.niltonrc.simplef.messages.CreateForwardingRequest;
+import com.niltonrc.simplef.messages.CreateForwardingResponse;
 import com.niltonrc.simplef.messages.StatisticsRequest;
 import com.niltonrc.simplef.messages.StatisticsResponse;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class StatisticsInterceptor extends HandlerInterceptorAdapter
+@RestController
+@RequestMapping( "/api" )
+public class ApiController
 {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constants
@@ -34,7 +34,8 @@ public class StatisticsInterceptor extends HandlerInterceptorAdapter
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructors
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public StatisticsInterceptor( IEntryService entryService )
+    @Autowired
+    protected ApiController( IEntryService entryService )
     {
         this.entryService = entryService;
         this.mapper = new ObjectMapper();
@@ -51,53 +52,25 @@ public class StatisticsInterceptor extends HandlerInterceptorAdapter
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public boolean preHandle(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Object handler ) throws Exception
+    @RequestMapping(
+            value = "/create",
+            method = { RequestMethod.POST },
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+    public String create( @RequestBody String address ) throws JsonProcessingException
     {
-        if( request.getMethod().equalsIgnoreCase( "get" ) &&
-            request.getRequestURI().startsWith( "/statistics" ) )
-        {
-            final List< String > codes = querySpliter( request.getQueryString() ).get( "code" );
-            final String json = buildResponse( codes );
-            response.setContentType( "application/json" );
-            response.setCharacterEncoding( "UTF-8" );
-            final PrintWriter output = response.getWriter();
-            output.print( json );
-            output.flush();
-            return false;
-        }
-        else
-        {
-            return super.preHandle( request, response, handler );
-        }
+        final CreateForwardingResponse response = entryService.createForwarding( new CreateForwardingRequest( address ) );
+        return mapper.writeValueAsString( response.getForwardingBundles() );
     }
 
-    private String buildResponse( List< String > codes ) throws JsonProcessingException
+    @RequestMapping(
+            value = "/statistics",
+            method = { RequestMethod.GET },
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+    public String statistics( @RequestParam( value = "code" ) List< String > codes ) throws JsonProcessingException
     {
         final StatisticsResponse response = entryService.getStatistics( new StatisticsRequest( codes ) );
         return mapper.writeValueAsString( response.getStatistics() );
-    }
-
-    private Map< String, List< String > > querySpliter( String query )
-    {
-        final Map< String, List< String > > map = new HashMap<>();
-        final String[] pairs = query.split( "&" );
-        for( final String pair : pairs )
-        {
-            final String[] parts = pair.split( "=" );
-            final String key = parts[ 0 ];
-            final String value = parts[ 1 ];
-            if( !map.containsKey( key ) )
-            {
-                map.put( key, new ArrayList<>() );
-            }
-            map.get( key ).add( value );
-        }
-        return map;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
