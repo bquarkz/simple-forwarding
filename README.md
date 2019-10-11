@@ -19,6 +19,9 @@ We could split Simple Forwarding into:
 > it will generate a json with a random fakeAddress (code).
 >
 > 1. one address are already created on database: ABCDEFGHIJ => https://www.neueda.com/
+>
+> 1. docker image is accessible from: `https://hub.docker.com/r/bquarkz/simple-forwarding`
+and you could pull it using: `docker pull bquarkz/simple-forwarding`
 
 Tech-Stack
 ==========
